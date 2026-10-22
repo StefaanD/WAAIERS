@@ -1,0 +1,157 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { pdfIsBeschikbaar } from "../../../lib/pdfAvailability";
+
+export async function getStaticPaths() {
+  const perPagina = 16;
+
+  const alleEdities = (await getCollection("edities-fr")).sort(
+    (a, b) =>
+      b.data.verschijningsdatum.getTime() -
+      a.data.verschijningsdatum.getTime()
+  );
+
+  const aantalPaginas = Math.ceil(alleEdities.length / perPagina);
+
+  return Array.from(
+    { length: Math.max(0, aantalPaginas - 1) },
+    (_, index) => {
+      const pagina = index + 2;
+
+      return {
+        params: { page: String(pagina) },
+        props: {
+          edities: alleEdities.slice(
+            (pagina - 1) * perPagina,
+            pagina * perPagina
+          ),
+          pagina,
+          aantalPaginas,
+        },
+      };
+    }
+  );
+}
+
+const { edities: ruweEdities, pagina, aantalPaginas } = Astro.props;
+
+const datumFormatter = new Intl.DateTimeFormat("fr-BE", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+// PDF-bestanden via Cloudflare R2
+const workerBaseUrl =
+  "https://waaiers-download-worker.redactie-503.workers.dev";
+
+const edities = await Promise.all(
+  ruweEdities.map(async (editie) => {
+    const pdfUrl =
+      `${workerBaseUrl}/download/edities/fr/${encodeURIComponent(editie.id)}`;
+
+    const pdfBeschikbaar = await pdfIsBeschikbaar(pdfUrl);
+
+    return {
+      ...editie,
+      pdfUrl,
+      pdfBeschikbaar,
+    };
+  })
+);
+---
+
+<BaseLayout
+  title={`Éditions françaises — page ${pagina} | WAAIERS®`}
+  description={`Téléchargez les éditions françaises de WAAIERS®, page ${pagina}.`}
+>
+  <main class="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
+    <a
+      href="/editions-fr/"
+      class="text-sm font-semibold text-brand-blue hover:underline"
+    >
+      ← Toutes les éditions françaises
+    </a>
+
+    <header class="mb-10 mt-8">
+      <p class="eyebrow mb-3">Archives</p>
+      <h1 class="section-heading">Éditions françaises</h1>
+      <p class="mt-4 text-muted">Page {pagina} sur {aantalPaginas}</p>
+    </header>
+
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {edities.map((editie) => (
+        <article class="flex h-full flex-col border border-brand-blue/15 bg-white/60 p-4">
+          <a
+            href={`/editions-fr/${editie.id}/`}
+            class="block"
+            aria-label={`Découvrir ${editie.data.titel}`}
+          >
+            <div class="flex min-h-64 items-center justify-center bg-stone-100 p-4">
+              <img
+                src={editie.data.cover}
+                alt={`Couverture de ${editie.data.titel}`}
+                class="max-h-72 w-auto max-w-full object-contain"
+                loading="lazy"
+              />
+            </div>
+            <h2 class="mt-4 font-display text-2xl font-bold uppercase leading-tight text-brand-blue">
+              {editie.data.titel}
+            </h2>
+          </a>
+
+          <p class="mt-2 text-sm text-muted">
+            {datumFormatter.format(editie.data.verschijningsdatum)}
+          </p>
+
+          <p class="mt-2 text-sm text-muted">
+            {editie.data.paginas} pages · {editie.data.bestandsgrootte}
+          </p>
+
+          <div class="mt-5 flex flex-wrap gap-2">
+            <a
+              href={`/editions-fr/${editie.id}/`}
+              class="button-secondary"
+            >
+              Info
+            </a>
+
+            {editie.pdfBeschikbaar && (
+              <a
+                href={editie.pdfUrl}
+                class="button-primary"
+              >
+                <span class="mr-2" aria-hidden="true">↓</span>
+                Télécharger PDF
+              </a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <nav
+      aria-label="Pagination des éditions françaises"
+      class="mt-12 flex items-center justify-between gap-4"
+    >
+      <a
+        href={pagina === 2
+          ? "/editions-fr/"
+          : `/editions-fr/page/${pagina - 1}/`}
+        class="button-secondary"
+      >
+        ← Précédent
+      </a>
+
+      {pagina < aantalPaginas && (
+        <a
+          href={`/editions-fr/page/${pagina + 1}/`}
+          class="button-primary"
+        >
+          Suivant →
+        </a>
+      )}
+    </nav>
+  </main>
+</BaseLayout>

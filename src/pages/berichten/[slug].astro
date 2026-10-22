@@ -1,0 +1,212 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  getCollection,
+  render,
+} from "astro:content";
+
+export async function getStaticPaths() {
+  const berichten = await getCollection("berichten");
+
+  return berichten.map((bericht) => ({
+    params: { slug: bericht.id },
+  }));
+}
+
+const alleBerichten = (await getCollection("berichten")).sort(
+  (a, b) => b.data.datum.getTime() - a.data.datum.getTime()
+);
+
+const slug = Astro.params.slug;
+const bericht = alleBerichten.find((item) => item.id === slug);
+
+if (!bericht) {
+  throw new Error(`Bericht niet gevonden: ${slug}`);
+}
+
+const { Content } = await render(bericht);
+
+const huidigeIndex = alleBerichten.findIndex(
+  (item) => item.id === bericht.id
+);
+
+// De lijst is gesorteerd van nieuw naar oud.
+const ouderBericht = alleBerichten[huidigeIndex + 1];
+const nieuwerBericht =
+  huidigeIndex > 0 ? alleBerichten[huidigeIndex - 1] : undefined;
+
+const datumFormaat = (datum: Date) =>
+  datum.toLocaleDateString("nl-BE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+---
+
+<BaseLayout
+  title={`${bericht.data.titel} | WAAIERS®`}
+  description={bericht.data.omschrijving}
+>
+  <main class="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-16">
+    <article>
+      <header class="mx-auto max-w-4xl border-b border-brand-blue/20 pb-7">
+        <a
+          href="/berichten/"
+          class="mb-8 inline-flex items-center gap-2 text-sm font-bold text-brand-blue transition-colors hover:text-ink"
+        >
+          <span aria-hidden="true">←</span>
+          Alle berichten
+        </a>
+
+        <p class="mb-3 text-sm font-semibold text-muted">
+          {datumFormaat(bericht.data.datum)}
+        </p>
+
+        <h1 class="font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-brand-blue sm:text-5xl md:text-6xl">
+          {bericht.data.titel}
+        </h1>
+
+        {bericht.data.afbeelding && (
+          <figure class="mt-8 overflow-hidden bg-paper">
+            <img
+              src={bericht.data.afbeelding}
+              alt={`Afbeelding bij ${bericht.data.titel}`}
+              class="max-h-[560px] w-full object-contain"
+              fetchpriority="high"
+            />
+          </figure>
+        )}
+      </header>
+
+      <div
+        class="bericht-inhoud mx-auto mt-8 max-w-3xl text-justify text-base leading-8 text-ink/85 sm:mt-10 sm:text-lg sm:leading-9"
+      >
+        <Content />
+      </div>
+
+      <footer class="mx-auto mt-12 max-w-3xl border-t-2 border-brand-yellow pt-6">
+        {(bericht.data.auteur || bericht.data.rol) && (
+          <div>
+            {bericht.data.auteur && (
+              <p class="font-display text-xl font-bold uppercase text-brand-blue">
+                {bericht.data.auteur}
+              </p>
+            )}
+
+            {bericht.data.rol && (
+              <p class="mt-1 text-sm text-muted">
+                {bericht.data.rol}
+              </p>
+            )}
+          </div>
+        )}
+
+        {(bericht.data.redactietitel || bericht.data.redactie) && (
+          <div class="mt-5 text-sm leading-6 text-muted">
+            {bericht.data.redactietitel && (
+              <p>{bericht.data.redactietitel}</p>
+            )}
+
+            {bericht.data.redactie && (
+              <p>{bericht.data.redactie}</p>
+            )}
+          </div>
+        )}
+      </footer>
+    </article>
+
+    <nav
+      aria-label="Berichtnavigatie"
+      class="mx-auto mt-12 flex max-w-5xl flex-col gap-4 border-t border-brand-blue/20 pt-6 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <a href="/berichten/" class="button-secondary self-start">
+        <span aria-hidden="true">←</span>
+        Terug naar berichten
+      </a>
+
+      <div class="flex flex-wrap gap-3">
+        {ouderBericht ? (
+          <a
+            href={`/berichten/${ouderBericht.id}/`}
+            class="button-secondary"
+          >
+            <span aria-hidden="true">←</span>
+            Vorig bericht
+          </a>
+        ) : (
+          <span />
+        )}
+
+        {nieuwerBericht && (
+          <a
+            href={`/berichten/${nieuwerBericht.id}/`}
+            class="button-primary"
+          >
+            Volgend bericht
+            <span aria-hidden="true">→</span>
+          </a>
+        )}
+      </div>
+    </nav>
+  </main>
+</BaseLayout>
+
+<style>
+  .bericht-inhoud :global(p) {
+    margin-block: 1.25rem;
+  }
+
+  .bericht-inhoud :global(h2) {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+    line-height: 1.15;
+  }
+
+  .bericht-inhoud :global(h3) {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+
+  .bericht-inhoud :global(ul),
+  .bericht-inhoud :global(ol) {
+    margin-block: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .bericht-inhoud :global(ul) {
+    list-style: disc;
+  }
+
+  .bericht-inhoud :global(ol) {
+    list-style: decimal;
+  }
+
+  .bericht-inhoud :global(li) {
+    margin-block: 0.4rem;
+    padding-left: 0.25rem;
+  }
+
+  .bericht-inhoud :global(a) {
+    color: var(--color-brand-blue);
+    text-decoration: underline;
+    text-decoration-color: var(--color-brand-yellow);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .bericht-inhoud :global(blockquote) {
+    margin-block: 1.75rem;
+    border-left: 4px solid var(--color-brand-yellow);
+    padding-left: 1.25rem;
+    font-style: italic;
+  }
+
+  .bericht-inhoud :global(img) {
+    margin-block: 1.5rem;
+    height: auto;
+    max-width: 100%;
+  }
+</style>

@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import AnderePublicatiesOverzicht from "../../components/AnderePublicatiesOverzicht.astro";
+import AanvraagBoekenFormulier from "../../components/AanvraagBoekenFormulier.astro";
+
+const publicatiesPerPagina = 4;
+
+const allePublicaties = (
+  await getCollection("andere-publicaties")
+).sort(
+  (a, b) =>
+    b.data.verschijningsjaar - a.data.verschijningsjaar
+);
+
+const publicaties = allePublicaties.slice(0, publicatiesPerPagina);
+const aantalPaginas = Math.ceil(
+  allePublicaties.length / publicatiesPerPagina
+);
+---
+
+<BaseLayout title="Andere publicaties | WAAIERS®">
+  <main class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <header class="mb-10 max-w-3xl">
+      <p class="eyebrow mb-3">Naast het tijdschrift</p>
+
+      <h1 class="section-heading mb-5">
+        Andere publicaties
+      </h1>
+
+      <p class="text-base leading-7 text-muted md:text-lg">
+        Ontdek de boeken en andere publicaties van WAAIERS® en zijn
+        medewerkers. Wil je meer weten over een bepaalde uitgave?
+        Vraag eenvoudig meer informatie aan via het formulier.
+      </p>
+    </header>
+
+    <AanvraagBoekenFormulier publicaties={allePublicaties} />
+
+    <AnderePublicatiesOverzicht publicaties={publicaties} />
+
+    {aantalPaginas > 1 && (
+      <nav
+        aria-label="Paginering publicaties"
+        class="mt-10 flex items-center justify-between gap-4 border-t border-brand-blue/20 pt-6"
+      >
+        <span class="text-sm text-muted">
+          Pagina 1 van {aantalPaginas}
+        </span>
+
+        <a
+          class="button-secondary"
+          href="/andere-publicaties/page/2/"
+        >
+          Volgende <span aria-hidden="true">→</span>
+        </a>
+      </nav>
+    )}
+  </main>
+</BaseLayout>

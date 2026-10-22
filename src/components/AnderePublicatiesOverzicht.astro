@@ -1,0 +1,91 @@
+---
+import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  publicaties: CollectionEntry<"andere-publicaties">[];
+}
+
+const { publicaties } = Astro.props;
+---
+
+<div class="space-y-8">
+  {publicaties.map(async (publicatie) => {
+    const { Content } = await render(publicatie);
+
+    return (
+      <article class="grid grid-cols-1 items-start gap-6 border-b border-brand-blue/15 pb-8 md:grid-cols-12 md:gap-8">
+        <div class="order-2 min-w-0 md:order-1 md:col-span-8">
+          <p class="eyebrow mb-3">
+            Publicatie · {publicatie.data.verschijningsjaar}
+          </p>
+
+          <h2 class="mb-4 text-3xl uppercase leading-tight md:text-4xl">
+            {publicatie.data.titel}
+          </h2>
+
+          <div class="max-w-none text-sm leading-7 text-ink md:text-base text-justify">
+            <Content />
+          </div>
+
+          <dl class="mt-5 grid grid-cols-1 gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+            <div>
+              <dt class="font-bold text-brand-blue">Auteur(s)</dt>
+              <dd>{publicatie.data.auteurs.join(", ")}</dd>
+            </div>
+
+            <div>
+              <dt class="font-bold text-brand-blue">Uitgever</dt>
+              <dd>{publicatie.data.uitgever}</dd>
+            </div>
+
+            <div>
+              <dt class="font-bold text-brand-blue">Formaat</dt>
+              <dd>{publicatie.data.formaat}</dd>
+            </div>
+
+            <div>
+              <dt class="font-bold text-brand-blue">Bindwijze</dt>
+              <dd>{publicatie.data.bindwijze}</dd>
+            </div>
+
+            <div>
+              <dt class="font-bold text-brand-blue">Taal</dt>
+              <dd>{publicatie.data.taal}</dd>
+            </div>
+
+            <div>
+              <dt class="font-bold text-brand-blue">Pagina's</dt>
+              <dd>{publicatie.data.paginas}</dd>
+            </div>
+
+            {publicatie.data.ISBN && (
+              <div class="sm:col-span-2">
+                <dt class="font-bold text-brand-blue">ISBN</dt>
+                <dd>{publicatie.data.ISBN}</dd>
+              </div>
+            )}
+          </dl>
+
+          <a
+            href="#informatie-aanvragen"
+            class="button-primary mt-6"
+            data-publicatie={publicatie.data.titel}
+          >
+            Meer informatie aanvragen
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <div class="order-1 flex justify-center md:order-2 md:col-span-4 md:justify-end md:pt-10">
+          <img
+            src={publicatie.data.cover}
+            alt={`Cover van ${publicatie.data.titel}`}
+            class="h-auto w-full max-w-xs object-contain"
+            loading="lazy"
+          />
+        </div>
+      </article>
+    );
+  })}
+</div>

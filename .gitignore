@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# temporary exclude media files
+/public/media/pdfs
+/public/media/pdfs-fr
+/public/media/geactualiseerde-artikels/pdfs

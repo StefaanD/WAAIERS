@@ -1,0 +1,101 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import AnderePublicatiesOverzicht from "../../../components/AnderePublicatiesOverzicht.astro";
+import AanvraagBoekenFormulier from "../../../components/AanvraagBoekenFormulier.astro";
+
+type Publicatie = CollectionEntry<"andere-publicaties">;
+
+export async function getStaticPaths() {
+  const publicatiesPerPagina = 4;
+
+  const allePublicaties = (
+    await getCollection("andere-publicaties")
+  ).sort(
+    (a, b) =>
+      b.data.verschijningsjaar - a.data.verschijningsjaar
+  );
+
+  const aantalPaginas = Math.ceil(
+    allePublicaties.length / publicatiesPerPagina
+  );
+
+  return Array.from(
+    { length: Math.max(0, aantalPaginas - 1) },
+    (_, index) => {
+      const pagina = index + 2;
+
+      return {
+        params: { page: String(pagina) },
+        props: {
+          pagina,
+          aantalPaginas,
+          allePublicaties,
+          publicaties: allePublicaties.slice(
+            (pagina - 1) * publicatiesPerPagina,
+            pagina * publicatiesPerPagina
+          ),
+        },
+      };
+    }
+  );
+}
+
+interface Props {
+  pagina: number;
+  aantalPaginas: number;
+  allePublicaties: Publicatie[];
+  publicaties: Publicatie[];
+}
+
+const {
+  pagina,
+  aantalPaginas,
+  allePublicaties,
+  publicaties,
+} = Astro.props as Props;
+
+const vorigeUrl =
+  pagina === 2
+    ? "/andere-publicaties/"
+    : `/andere-publicaties/page/${pagina - 1}/`;
+
+const volgendeUrl =
+  `/andere-publicaties/page/${pagina + 1}/`;
+---
+
+<BaseLayout title={`Andere publicaties — pagina ${pagina} | WAAIERS®`}>
+  <main class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <header class="mb-10 max-w-3xl">
+      <p class="eyebrow mb-3">Naast het tijdschrift</p>
+      <h1 class="section-heading mb-5">Andere publicaties</h1>
+      <p class="text-base leading-7 text-muted md:text-lg">
+        Ontdek de boeken en andere publicaties van WAAIERS® en zijn medewerkers.
+      </p>
+    </header>
+
+    <AanvraagBoekenFormulier publicaties={allePublicaties} />
+
+    <AnderePublicatiesOverzicht publicaties={publicaties} />
+
+    <nav
+      aria-label="Paginering publicaties"
+      class="mt-10 flex items-center justify-between gap-4 border-t border-brand-blue/20 pt-6"
+    >
+      <a class="button-secondary" href={vorigeUrl}>
+        <span aria-hidden="true">←</span> Vorige
+      </a>
+
+      <span class="text-sm text-muted">
+        Pagina {pagina} van {aantalPaginas}
+      </span>
+
+      {pagina < aantalPaginas && (
+        <a class="button-secondary" href={volgendeUrl}>
+          Volgende <span aria-hidden="true">→</span>
+        </a>
+      )}
+    </nav>
+  </main>
+</BaseLayout>

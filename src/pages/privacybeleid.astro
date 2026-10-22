@@ -1,0 +1,586 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const bijgewerkt = "14 oktober 2026";
+
+const inhoud = [
+  { id: "verantwoordelijke", nummer: 1, titel: "Wie is verantwoordelijk voor je persoonsgegevens?" },
+  { id: "gegevens", nummer: 2, titel: "Welke persoonsgegevens verzamelen we?" },
+  { id: "doeleinden", nummer: 3, titel: "Waarom verwerken we deze gegevens?" },
+  { id: "delen", nummer: 4, titel: "Met wie delen we je gegevens?" },
+  { id: "doorgifte", nummer: 5, titel: "Doorgifte van persoonsgegevens" },
+  { id: "bewaren", nummer: 6, titel: "Hoe lang bewaren we je gegevens?" },
+  { id: "beveiliging", nummer: 7, titel: "Hoe beveiligen we je gegevens?" },
+  { id: "uitschrijven", nummer: 8, titel: "Nieuwsbrief uitschrijven" },
+  { id: "rechten", nummer: 9, titel: "Je rechten" },
+  { id: "cookies", nummer: 10, titel: "Cookies en vergelijkbare technologieën" },
+  { id: "wijzigingen", nummer: 11, titel: "Wijzigingen aan dit privacyverklaring" },
+];
+---
+
+<BaseLayout
+  title="Privacyverklaring | WAAIERS®"
+  description="Lees hoe WAAIERS® omgaat met persoonsgegevens, e-mailupdates, contactberichten en privacyrechten."
+>
+  <div class="bg-brand-paper text-brand-ink">
+    <div class="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
+
+      <!-- Introductie -->
+      <header class="relative overflow-hidden border-b-4 border-brand-yellow pb-8 sm:pb-10">
+        <div class="relative z-10 max-w-3xl">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue">
+            Juridisch · WAAIERS®
+          </p>
+
+          <h1 class="mt-3 font-display text-5xl font-extrabold leading-none tracking-tight text-brand-blue sm:text-6xl md:text-7xl">
+            Privacyverklaring
+          </h1>
+
+          <div class="mt-5 flex items-center gap-3">
+            <span class="h-1 w-10 bg-brand-yellow"></span>
+            <p class="text-sm text-brand-muted">
+              Laatst bijgewerkt: {bijgewerkt}
+            </p>
+          </div>
+
+          <p class="mt-6 max-w-2xl text-base leading-7 text-brand-blue sm:text-lg sm:leading-8 text-justify">
+            WAAIERS® hecht belang aan de bescherming van je persoonsgegevens.
+            In deze privacyverklaring leggen we uit welke persoonsgegevens we
+            verzamelen wanneer je onze website bezoekt, je inschrijft voor
+            onze e-mailupdates of contact met ons opneemt, waarom we die
+            gegevens gebruiken en welke rechten je hebt.
+          </p>
+        </div>
+
+        <div class="mt-7 flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-[0.15em] text-brand-muted">
+          <span class="border border-brand-blue/20 px-3 py-2">Persoonsgegevens</span>
+          <span class="border border-brand-blue/20 px-3 py-2">Privacy</span>
+          <span class="border border-brand-blue/20 px-3 py-2">Jouw rechten</span>
+        </div>
+      </header>
+
+      <!-- Inhoud en artikel -->
+      <div class="grid gap-8 pt-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[300px_minmax(0,1fr)]">
+
+        <!-- Inhoudsoverzicht -->
+        <aside class="lg:sticky lg:top-6 lg:self-start">
+          <nav
+            aria-label="Inhoud van de privacyverklaring"
+            class="border border-brand-blue/10 bg-white/40 p-5 sm:p-6"
+          >
+            <p class="font-display text-2xl font-bold text-brand-blue">
+              Inhoud
+            </p>
+
+            <ol class="mt-4 divide-y divide-brand-blue/10">
+              {inhoud.map((item) => (
+                <li>
+                  <a
+                    href={`#${item.id}`}
+                    class="group flex gap-3 py-3 text-sm leading-5 text-brand-blue transition-colors hover:text-brand-ink"
+                  >
+                    <span class="w-5 shrink-0 font-bold text-brand-blue/60 group-hover:text-brand-blue">
+                      {item.nummer}
+                    </span>
+                    <span class="underline decoration-transparent underline-offset-4 group-hover:decoration-brand-yellow">
+                      {item.titel}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+
+          <div class="mt-5 border-l-4 border-brand-yellow bg-white/40 p-5">
+            <p class="font-display text-xl font-bold text-brand-blue">
+              Vragen over je privacy?
+            </p>
+            <p class="mt-2 text-sm leading-6 text-brand-muted text-justify">
+              Wil je meer informatie over deze privacyverklaring of over de
+              verwerking van je persoonsgegevens? Neem dan contact op via
+              het e-mailadres dat hierboven bij de verantwoordelijke staat.
+            </p>
+          </div>
+        </aside>
+
+        <!-- Privacyverklaring -->
+        <article class="min-w-0 max-w-3xl">
+
+          <section id="verantwoordelijke" class="scroll-mt-8 border-b border-brand-blue/15 pb-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">01.</span>
+              Wie is verantwoordelijk voor je persoonsgegevens?
+            </h2>
+
+            <p class="mt-4 leading-7">
+              De verwerkingsverantwoordelijke voor de persoonsgegevens die
+              via deze website worden verzameld, is:
+            </p>
+
+            <div class="mt-5 border-l-4 border-brand-yellow bg-white/50 p-5 sm:p-6">
+              <dl class="space-y-3 text-sm leading-6">
+                <div>
+                  <dt class="font-bold text-brand-blue">Naam</dt>
+                  <dd>Jan De Smet</dd>
+                </div>
+                <div>
+                  <dt class="font-bold text-brand-blue">Organisatie of project</dt>
+                  <dd>WAAIERS®</dd>
+                </div>
+                <div>
+                  <dt class="font-bold text-brand-blue">E-mailadres</dt>
+                  <dd>redactie@waaierstijdschrift.be</dd>
+                </div>
+                <div>
+                  <dt class="font-bold text-brand-blue">Adres</dt>
+                  <dd>Centrumlaan 147</dd>
+                  <dd>9800 Deinze</dd>
+                </div>
+              </dl>
+            </div>
+
+            <p class="mt-4 leading-7">
+              Voor vragen over deze privacyverklaring of over de verwerking van
+              je persoonsgegevens kun je contact opnemen via het bovenstaande
+              e-mailadres.
+            </p>
+          </section>
+
+          <section id="gegevens" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">02.</span>
+              Welke persoonsgegevens verzamelen we?
+            </h2>
+
+            <h3 class="mt-6 font-display text-2xl font-bold text-brand-blue">
+              2.1. Inschrijven voor e-mailupdates
+            </h3>
+
+            <p class="mt-3 leading-7">
+              Wanneer je je inschrijft voor onze nieuwsbrief of andere
+              e-mailupdates, kunnen we de volgende gegevens verzamelen:
+            </p>
+
+            <ul class="mt-3 list-disc space-y-1 pl-6 leading-7 marker:text-brand-yellow">
+              <li>Voornaam</li>
+              <li>Familienaam</li>
+              <li>E-mailadres</li>
+              <li>Taalvoorkeur</li>
+              <li>Land</li>
+            </ul>
+
+            <p class="mt-4 leading-7">
+              We gebruiken deze gegevens om je inschrijving te beheren en
+              je de e-mailupdates te bezorgen waarvoor je je hebt aangemeld.
+            </p>
+
+            <p class="mt-3 border-l-2 border-brand-yellow pl-4 text-sm leading-6">
+              <strong>Rechtsgrond:</strong> je toestemming voor het ontvangen
+              van de e-mailupdates. Je kunt die toestemming op elk moment
+              intrekken.
+            </p>
+
+            <h3 class="mt-7 font-display text-2xl font-bold text-brand-blue">
+              2.2. Contactformulier
+            </h3>
+
+            <p class="mt-3 leading-7">
+              Wanneer je ons contactformulier gebruikt, verzamelen we de
+              gegevens die je invult:
+            </p>
+
+            <ul class="mt-3 list-disc space-y-1 pl-6 leading-7 marker:text-brand-yellow">
+              <li>Voornaam</li>
+              <li>Familienaam</li>
+              <li>E-mailadres</li>
+              <li>De inhoud van je bericht</li>
+            </ul>
+
+            <p class="mt-4 leading-7 text-justify">
+              We gebruiken deze gegevens om je vraag te ontvangen, te
+              beantwoorden en eventuele verdere communicatie af te handelen.
+            </p>
+
+            <p class="mt-3 border-l-2 border-brand-yellow pl-4 text-sm leading-6 text-justify">
+              <strong>Rechtsgrond:</strong> ons gerechtvaardigd belang om
+              vragen te beantwoorden en met bezoekers te communiceren.
+              Wanneer je vraag verband houdt met een overeenkomst of een
+              verzoek dat aan de sluiting daarvan voorafgaat, kan een andere
+              rechtsgrond van toepassing zijn.
+            </p>
+
+            <h3 class="mt-7 font-display text-2xl font-bold text-brand-blue">
+              2.3. Technische gegevens
+            </h3>
+
+            <p class="mt-3 leading-7 text-justify">
+              Bij het bezoeken van een website kunnen de hostingprovider en
+              andere technische dienstverleners bepaalde gegevens verwerken
+              die nodig zijn om de website te leveren, te beveiligen en goed
+              te laten functioneren. Dit kan bijvoorbeeld informatie omvatten
+              over verzoeken aan de server, het tijdstip van een bezoek, het
+              gebruikte apparaat of browser en het IP-adres.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              De precieze gegevens en bewaartermijnen zijn afhankelijk van
+              de gebruikte hosting- en beveiligingsdiensten.
+            </p>
+          </section>
+
+          <section id="doeleinden" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">03.</span>
+              Waarom verwerken we deze gegevens?
+            </h2>
+
+            <p class="mt-4 leading-7">
+              We verwerken persoonsgegevens uitsluitend voor duidelijk
+              omschreven doeleinden, waaronder:
+            </p>
+
+            <ul class="mt-4 space-y-3">
+              {[
+                "Het beheren van inschrijvingen voor e-mailupdates.",
+                "Het versturen van de e-mailupdates waarvoor je je hebt aangemeld.",
+                "Het beantwoorden van berichten en vragen.",
+                "Het beveiligen, onderhouden en technisch laten functioneren van onze website.",
+                "Het voldoen aan wettelijke verplichtingen, indien van toepassing.",
+              ].map((item) => (
+                <li class="flex gap-3 leading-6">
+                  <span class="mt-2 h-2 w-2 shrink-0 bg-brand-yellow"></span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <p class="mt-4 leading-7">
+              We gebruiken je persoonsgegevens niet voor andere doeleinden
+              die onverenigbaar zijn met deze doeleinden.
+            </p>
+          </section>
+
+          <section id="delen" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">04.</span>
+              Met wie delen we je gegevens?
+            </h2>
+
+            <p class="mt-4 leading-7 text-justify">
+              We verkopen je persoonsgegevens niet. Om onze website en
+              communicatie te verzorgen, kunnen we wel gebruikmaken van
+              dienstverleners die persoonsgegevens namens ons verwerken.
+            </p>
+
+            <h3 class="mt-6 font-display text-2xl font-bold text-brand-blue">
+              4.1. Sender.net
+            </h3>
+
+            <p class="mt-3 leading-7 text-justify">
+              Voor het beheren van inschrijvingen en het versturen van
+              e-mailupdates gebruiken we Sender.net.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              Wanneer je je inschrijft, worden de daarvoor benodigde gegevens
+              aan Sender.net doorgegeven en via die dienst verwerkt. Sender.net
+              ondersteunt ons bij het beheren van de mailinglijst en het
+              verzenden van e-mails.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              Afhankelijk van de gebruikte functies kunnen ook gegevens over
+              de aflevering, het openen of het aanklikken van e-mails worden
+              verwerkt. Dit is afhankelijk van de functies die daadwerkelijk
+              zijn ingeschakeld.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              Meer informatie vind je in het{" "}
+              <a
+                href="https://www.sender.net/privacy-policy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-semibold text-brand-blue underline decoration-brand-yellow underline-offset-4 hover:text-brand-ink"
+              >
+                privacyverklaring van Sender.net ↗
+              </a>.
+            </p>
+
+            <h3 class="mt-7 font-display text-2xl font-bold text-brand-blue">
+              4.2. Netlify
+            </h3>
+
+            <p class="mt-3 leading-7 text-justify">
+              Onze uiteindelijke hostingprovider wordt hier vermeld zodra
+              die keuze definitief is. Indien we Netlify gebruiken, verwerken
+              we via Netlify Forms de gegevens die je via het contactformulier
+              verstuurt.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              De ingevulde gegevens worden dan verwerkt om het bericht te
+              ontvangen en beschikbaar te maken voor de beheerder van
+              WAAIERS®. Netlify kan daarnaast technische gegevens verwerken
+              voor het leveren en beveiligen van zijn diensten.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              Indien Netlify wordt gebruikt, vind je meer informatie in de{" "}
+              <a
+                href="https://www.netlify.com/privacy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-semibold text-brand-blue underline decoration-brand-yellow underline-offset-4 hover:text-brand-ink"
+              >
+                privacyverklaring van Netlify ↗
+              </a>.
+            </p>
+
+            <h3 class="mt-7 font-display text-2xl font-bold text-brand-blue">
+              4.3. Wettelijke verplichtingen
+            </h3>
+
+            <p class="mt-3 leading-7 text-justify">
+              We kunnen persoonsgegevens verstrekken wanneer dit wettelijk
+              verplicht is of wanneer dit noodzakelijk is om onze rechten
+              te beschermen.
+            </p>
+          </section>
+
+          <section id="doorgifte" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">05.</span>
+              Doorgifte van persoonsgegevens
+            </h2>
+
+            <p class="mt-4 leading-7 text-justify">
+              Onze dienstverleners kunnen persoonsgegevens op verschillende
+              locaties verwerken. Indien persoonsgegevens buiten de Europese
+              Economische Ruimte worden doorgegeven, zorgen we ervoor dat
+              daarvoor een geldige rechtsgrond en, waar vereist, passende
+              waarborgen aanwezig zijn.
+            </p>
+
+            <p class="mt-3 leading-7">
+              De toepasselijke locaties en waarborgen worden bepaald door
+              de diensten en instellingen die we daadwerkelijk gebruiken.
+            </p>
+          </section>
+
+          <section id="bewaren" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">06.</span>
+              Hoe lang bewaren we je gegevens?
+            </h2>
+
+            <p class="mt-4 leading-7 text-justify">
+              We bewaren persoonsgegevens niet langer dan noodzakelijk
+              voor het doel waarvoor ze zijn verzameld, rekening houdend
+              met eventuele wettelijke verplichtingen.
+            </p>
+
+            <div class="mt-5 space-y-4">
+              <div class="border-l-2 border-brand-yellow pl-4">
+                <h3 class="font-bold text-brand-blue">E-mailupdates</h3>
+                <p class="mt-1 leading-7 text-justify">
+                  Zolang je ingeschreven blijft. Na uitschrijving verwijderen
+                  we je gegevens of bewaren we uitsluitend de informatie die
+                  noodzakelijk is om je uitschrijving te respecteren of aan
+                  wettelijke verplichtingen te voldoen.
+                </p>
+              </div>
+
+              <div class="border-l-2 border-brand-yellow pl-4">
+                <h3 class="font-bold text-brand-blue">Contactformulier</h3>
+                <p class="mt-1 leading-7 text-justify">
+                  Zolang dit nodig is om je bericht te behandelen en eventuele
+                  opvolging af te handelen. Daarna verwijderen we de gegevens,
+                  tenzij een langere bewaring gerechtvaardigd of wettelijk
+                  verplicht is.
+                </p>
+              </div>
+
+              <div class="border-l-2 border-brand-yellow pl-4">
+                <h3 class="font-bold text-brand-blue">Technische gegevens</h3>
+                <p class="mt-1 leading-7 text-justify">
+                  Volgens de bewaartermijnen en instellingen van onze hosting-
+                  en beveiligingsdiensten.
+                </p>
+              </div>
+            </div>
+
+            <p class="mt-5 leading-7 text-justify">
+              We controleren regelmatig of persoonsgegevens nog nodig zijn
+              en verwijderen gegevens wanneer ze niet langer bewaard hoeven
+              te worden.
+            </p>
+          </section>
+
+          <section id="beveiliging" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">07.</span>
+              Hoe beveiligen we je gegevens?
+            </h2>
+
+            <p class="mt-4 leading-7 text-justify">
+              We nemen passende technische en organisatorische maatregelen
+              om persoonsgegevens te beschermen tegen verlies, misbruik,
+              ongeoorloofde toegang of ongeoorloofde openbaarmaking.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              De toegang tot inzendingen en inschrijvingsgegevens wordt
+              beperkt tot personen die deze gegevens nodig hebben voor
+              het beheer van WAAIERS®.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              Geen enkele methode voor gegevensoverdracht of elektronische
+              opslag kan absolute veiligheid garanderen.
+            </p>
+          </section>
+
+          <section id="uitschrijven" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">08.</span>
+              Nieuwsbrief uitschrijven
+            </h2>
+
+            <p class="mt-4 leading-7 text-justify">
+              Je kunt je op elk moment uitschrijven voor onze e-mailupdates
+              via de uitschrijflink in de betreffende e-mail, indien
+              beschikbaar, of door contact met ons op te nemen via{" "}
+              <span class="font-semibold">redactie@waaierstijdschrift.be</span>.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              Na je uitschrijving sturen we je geen verdere e-mailupdates
+              waarvoor je toestemming hebt ingetrokken. We verwerken een
+              uitschrijvingsverzoek zo snel mogelijk.
+            </p>
+          </section>
+
+          <section id="rechten" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">09.</span>
+              Je rechten
+            </h2>
+
+            <p class="mt-4 leading-7">
+              Afhankelijk van de toepasselijke voorwaarden van de Algemene
+              Verordening Gegevensbescherming (AVG) heb je onder meer het
+              recht om:
+            </p>
+
+            <ul class="mt-4 space-y-3">
+              {[
+                "Inzage te vragen in je persoonsgegevens.",
+                "Onjuiste gegevens te laten verbeteren.",
+                "Je gegevens te laten verwijderen wanneer daarvoor een geldige grond bestaat.",
+                "De verwerking in bepaalde gevallen te laten beperken.",
+                "Bezwaar te maken tegen bepaalde verwerkingen.",
+                "Je persoonsgegevens in bepaalde gevallen over te dragen.",
+                "Je toestemming op elk moment in te trekken wanneer de verwerking op toestemming is gebaseerd.",
+              ].map((item) => (
+                <li class="flex gap-3 leading-6">
+                  <span class="mt-2 h-2 w-2 shrink-0 bg-brand-yellow"></span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <p class="mt-4 leading-7">
+              Het intrekken van toestemming doet geen afbreuk aan de
+              rechtmatigheid van de verwerking vóór de intrekking.
+            </p>
+
+            <p class="mt-3 leading-7">
+              Je kunt een verzoek indienen via{" "}
+              <span class="font-semibold">redactie@waaierstijdschrift.be</span>. We kunnen je
+              vragen je identiteit te bevestigen wanneer dat nodig is om
+              je gegevens te beschermen.
+            </p>
+
+            <div class="mt-6 border border-brand-blue/10 bg-white/50 p-5 sm:p-6">
+              <h3 class="font-display text-xl font-bold text-brand-blue">
+                Een klacht indienen
+              </h3>
+
+              <p class="mt-2 leading-7">
+                Je hebt ook het recht een klacht in te dienen bij de Belgische
+                Gegevensbeschermingsautoriteit (GBA).
+              </p>
+
+              <address class="mt-4 space-y-1 not-italic text-sm leading-6">
+                <p class="font-bold text-brand-blue">
+                  Gegevensbeschermingsautoriteit
+                </p>
+                <p>Drukpersstraat 35, 1000 Brussel</p>
+                <p>
+                  <a
+                    href="https://www.gegevensbeschermingsautoriteit.be/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-semibold text-brand-blue underline decoration-brand-yellow underline-offset-4 hover:text-brand-ink"
+                  >
+                    gegevensbeschermingsautoriteit.be ↗
+                  </a>
+                </p>
+              </address>
+            </div>
+          </section>
+
+          <section id="cookies" class="scroll-mt-8 border-b border-brand-blue/15 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">10.</span>
+              Cookies en vergelijkbare technologieën
+            </h2>
+
+            <p class="mt-4 leading-7 text-justify">
+              We willen onze website zo eenvoudig mogelijk houden en geen
+              niet-noodzakelijke tracking toepassen zonder geldige rechtsgrond
+              en, waar vereist, voorafgaande toestemming.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              De concrete cookies en vergelijkbare technologieën die de
+              website gebruikt, hangen af van de uiteindelijke configuratie
+              van de website en de externe diensten. We zullen deze informatie
+              aanpassen aan de daadwerkelijk gebruikte technologieën.
+            </p>
+          </section>
+
+          <section id="wijzigingen" class="scroll-mt-8 py-8">
+            <h2 class="font-display text-3xl font-bold leading-tight text-brand-blue sm:text-4xl">
+              <span class="mr-2 text-brand-yellow">11.</span>
+              Wijzigingen aan deze privacyverklaring
+            </h2>
+
+            <p class="mt-4 leading-7 text-justify">
+              We kunnen deze privacyverklaring aanpassen wanneer onze website,
+              diensten of verwerkings-activiteiten veranderen, of wanneer
+              dit nodig is om aan wettelijke verplichtingen te voldoen.
+            </p>
+
+            <p class="mt-3 leading-7 text-justify">
+              De meest recente versie is steeds beschikbaar op deze pagina.
+              Bovenaan vermelden we wanneer de privacyverklaring voor het laatst
+              is bijgewerkt.
+            </p>
+          </section>
+
+          <!-- Terug naar boven -->
+          <div class="mt-4 border-t-4 border-brand-yellow pt-5">
+            <a
+              href="#top"
+              class="inline-flex items-center gap-2 text-sm font-bold text-brand-blue underline decoration-brand-yellow underline-offset-4 transition-colors hover:text-brand-ink"
+            >
+              Terug naar boven ↑
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

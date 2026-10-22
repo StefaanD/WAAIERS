@@ -1,0 +1,112 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const paginaGrootte = 12;
+
+const berichten = (await getCollection("berichten")).sort(
+  (a, b) => b.data.datum.getTime() - a.data.datum.getTime()
+);
+
+const zichtbareBerichten = berichten.slice(0, paginaGrootte);
+const totaalPaginas = Math.ceil(berichten.length / paginaGrootte);
+
+const datumFormaat = (datum: Date) =>
+  datum.toLocaleDateString("nl-BE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+---
+
+<BaseLayout
+  title="Berichten | WAAIERS®"
+  description="Nieuws, verhalen en updates uit de wereld van WAAIERS®."
+>
+  <main class="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+    <header class="border-b border-brand-blue/20 pb-8">
+      <p class="eyebrow mb-4">Uit de redactie</p>
+      <h1 class="section-heading">Berichten</h1>
+      <p class="mt-4 max-w-2xl leading-7 text-ink/75">
+        Nieuws, verhalen en updates uit de wereld van WAAIERS®.
+      </p>
+      <p class="mt-3 text-sm text-muted">
+        {berichten.length} berichten
+      </p>
+    </header>
+
+    {zichtbareBerichten.length > 0 ? (
+      <div class="mt-10 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
+        {zichtbareBerichten.map((bericht) => (
+          <article class="group flex min-w-0 flex-col overflow-hidden border border-brand-blue/15 bg-white transition-colors hover:border-brand-blue/50">
+            <a
+              href={`/berichten/${bericht.id}/`}
+              class="block"
+              aria-label={`Lees: ${bericht.data.titel}`}
+            >
+              {bericht.data.afbeelding ? (
+                <div class="overflow-hidden bg-paper">
+                  <img
+                    src={bericht.data.afbeelding}
+                    alt=""
+                    class="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <div class="flex aspect-[4/3] items-end bg-brand-blue p-5">
+                  <span class="h-1 w-16 bg-brand-yellow"></span>
+                </div>
+              )}
+            </a>
+
+            <div class="flex flex-1 flex-col p-5 sm:p-6">
+              <p class="text-xs font-semibold uppercase tracking-wide text-muted">
+                {datumFormaat(bericht.data.datum)}
+              </p>
+
+              <h2 class="mt-3 font-display text-2xl font-bold uppercase leading-tight text-brand-blue">
+                <a
+                  href={`/berichten/${bericht.id}/`}
+                  class="decoration-brand-yellow decoration-2 underline-offset-4 group-hover:underline"
+                >
+                  {bericht.data.titel}
+                </a>
+              </h2>
+
+              <p class="mt-3 flex-1 text-sm leading-6 text-ink/75">
+                {bericht.data.omschrijving}
+              </p>
+
+              <div class="mt-6">
+                <a
+                  href={`/berichten/${bericht.id}/`}
+                  class="button-secondary"
+                >
+                  Lees het volledige bericht
+                  <span class="ml-2" aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p class="mt-10 text-muted">
+        Er zijn momenteel geen berichten beschikbaar.
+      </p>
+    )}
+
+    {totaalPaginas > 1 && (
+      <nav
+        aria-label="Paginanavigatie"
+        class="mt-12 flex justify-end border-t border-brand-blue/20 pt-6"
+      >
+        <a href="/berichten/page/2/" class="button-primary">
+          Oudere berichten
+          <span class="ml-2" aria-hidden="true">→</span>
+        </a>
+      </nav>
+    )}
+  </main>
+</BaseLayout>

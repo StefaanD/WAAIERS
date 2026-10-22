@@ -1,0 +1,206 @@
+<header id="site-header" class="relative z-20 border-b border-brand-blue/20 bg-brand-yellow">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8">
+    <div class="flex min-h-20 items-center justify-between gap-4 sm:min-h-24">
+      <!-- Merk -->
+      <a href="/" class="group relative z-10 shrink-0" aria-label="WAAIERS® — home">
+        <span class="block font-display text-4xl font-extrabold leading-none tracking-tight text-brand-blue sm:text-5xl">
+          WAAIERS®
+        </span>
+        <span class="mt-1 block text-[0.6rem] font-bold uppercase tracking-[0.2em] text-brand-blue/70">
+          Het wielertijdschrift
+        </span>
+      </a>
+
+      <!-- Desktopnavigatie -->
+      <nav
+        aria-label="Hoofdnavigatie"
+        class="hidden items-center justify-end gap-x-5 text-xs font-bold uppercase tracking-wide text-brand-blue lg:flex xl:gap-x-7"
+      >
+        <a class="py-3 transition-colors hover:text-muted" href="/overwaaiers/">
+          Over WAAIERS®
+        </a>
+
+      <a class="py-3 transition-colors hover:text-muted" href="/edities/">
+          Edities
+        </a>
+
+        <a class="py-3 transition-colors hover:text-muted" href="/berichten/">
+          Berichten
+        </a>
+
+        <details class="group relative">
+          <summary class="flex cursor-pointer list-none items-center gap-2 py-3 hover:text-muted">
+            Publicaties
+            <span aria-hidden="true" class="text-[0.6rem] transition-transform group-open:rotate-180">▼</span>
+          </summary>
+
+          <div class="absolute right-0 top-full z-30 mt-1 min-w-64 border-t-4 border-brand-yellow bg-brand-blue p-2 text-white shadow-xl">
+            <a class="block px-3 py-3 transition-colors hover:bg-white/10" href="/editions-fr/">
+              Franse edities
+            </a>
+            <a class="block px-3 py-3 transition-colors hover:bg-white/10" href="/geactualiseerde-artikels/">
+              Geactualiseerde artikels
+            </a>
+            <a class="block px-3 py-3 transition-colors hover:bg-white/10" href="/andere-publicaties/">
+              Andere publicaties
+            </a>
+          </div>
+        </details>
+
+        <a class="py-3 transition-colors hover:text-muted" href="/inschrijven/">
+          Inschrijven
+        </a>
+
+        <a class="py-3 transition-colors hover:text-muted" href="/contact/">
+          Contacteer ons
+        </a>
+
+        <a class="py-3 transition-colors hover:text-muted" href="/redactie/">
+          Redactie
+        </a>
+      </nav>
+
+      <!-- Mobiele menuknop -->
+      <button
+        id="mobile-menu-toggle"
+        type="button"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center border border-brand-blue/20 text-brand-blue transition-colors hover:bg-brand-yellow lg:hidden"
+        aria-label="Menu openen"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <svg
+          id="mobile-menu-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="square"
+          aria-hidden="true"
+        >
+          <path d="M4 7h16" />
+          <path d="M4 12h16" />
+          <path d="M4 17h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobiele navigatie -->
+    <nav
+      id="mobile-menu"
+      aria-label="Mobiele navigatie"
+      hidden
+      class="border-t border-brand-blue/15 pb-5 lg:hidden"
+    >
+      <div class="flex flex-col pt-2 text-sm font-bold uppercase tracking-wide text-brand-blue">
+        <a class="border-b border-brand-blue/10 px-2 py-4 hover:bg-brand-yellow/30" href="/edities/">
+          Edities
+        </a>
+
+        <a class="border-b border-brand-blue/10 px-2 py-4 hover:bg-brand-yellow/30" href="/berichten/">
+          Berichten
+        </a>
+
+        <details class="group border-b border-brand-blue/10">
+          <summary class="flex cursor-pointer list-none items-center justify-between px-2 py-4 hover:bg-brand-yellow/30">
+            Publicaties
+            <span aria-hidden="true" class="text-[0.65rem] transition-transform group-open:rotate-180">▼</span>
+          </summary>
+
+          <div class="mb-3 ml-2 border-l-4 border-brand-yellow bg-brand-blue py-1 pl-3 text-xs text-white">
+            <a class="block px-3 py-3 hover:bg-white/10" href="/editions-fr/">
+              Franse edities
+            </a>
+            <a class="block px-3 py-3 hover:bg-white/10" href="/geactualiseerde-artikels/">
+              Geactualiseerde artikels
+            </a>
+            <a class="block px-3 py-3 hover:bg-white/10" href="/andere-publicaties/">
+              Andere publicaties
+            </a>
+          </div>
+        </details>
+
+        <a class="border-b border-brand-blue/10 px-2 py-4 hover:bg-brand-yellow/30" href="/redactie/">
+          Redactie
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="h-1 w-full bg-brand-yellow"></div>
+</header>
+
+<script>
+  const header = document.querySelector("#site-header");
+  const menuToggle = document.querySelector("#mobile-menu-toggle");
+  const mobileMenu = document.querySelector("#mobile-menu");
+  const menuIcon = document.querySelector("#mobile-menu-icon");
+
+  if (
+    header instanceof HTMLElement &&
+    menuToggle instanceof HTMLButtonElement &&
+    mobileMenu instanceof HTMLElement &&
+    menuIcon instanceof SVGElement
+  ) {
+    const desktopQuery = window.matchMedia("(min-width: 1024px)");
+
+    const setMenuOpen = (open: boolean) => {
+      mobileMenu.hidden = !open;
+      menuToggle.setAttribute("aria-expanded", String(open));
+      menuToggle.setAttribute(
+        "aria-label",
+        open ? "Menu sluiten" : "Menu openen"
+      );
+
+      menuIcon.innerHTML = open
+        ? '<path d="m6 6 12 12"/><path d="M18 6 6 18"/>'
+        : '<path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/>';
+
+      if (!open) {
+        mobileMenu.querySelectorAll("details[open]").forEach((item) => {
+          item.removeAttribute("open");
+        });
+      }
+    };
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
+      setMenuOpen(!isOpen);
+    });
+
+    mobileMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        setMenuOpen(false);
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        event.key === "Escape" &&
+        menuToggle.getAttribute("aria-expanded") === "true"
+      ) {
+        setMenuOpen(false);
+        menuToggle.focus();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        event.target instanceof Node &&
+        !header.contains(event.target) &&
+        menuToggle.getAttribute("aria-expanded") === "true"
+      ) {
+        setMenuOpen(false);
+      }
+    });
+
+    desktopQuery.addEventListener("change", (event) => {
+      if (event.matches) {
+        setMenuOpen(false);
+      }
+    });
+  }
+</script>

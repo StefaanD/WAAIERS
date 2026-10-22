@@ -1,0 +1,175 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { pdfIsBeschikbaar } from "../../lib/pdfAvailability";
+
+export async function getStaticPaths() {
+  const edities = (await getCollection("edities-fr")).sort(
+    (a, b) =>
+      b.data.verschijningsdatum.getTime() -
+      a.data.verschijningsdatum.getTime()
+  );
+
+  return edities.map((editie, index) => ({
+    params: { slug: editie.id },
+    props: {
+      editie,
+      vorigeEditie: edities[index + 1] ?? null,
+      volgendeEditie: edities[index - 1] ?? null,
+    },
+  }));
+}
+
+const { editie, vorigeEditie, volgendeEditie } = Astro.props;
+
+const datumFormatter = new Intl.DateTimeFormat("fr-BE", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+// PDF-bestanden via Cloudflare R2
+const workerBaseUrl =
+  "https://waaiers-download-worker.redactie-503.workers.dev";
+
+const pdfUrl =
+  `${workerBaseUrl}/download/edities/fr/${encodeURIComponent(editie.id)}`;
+
+const pdfBeschikbaar = await pdfIsBeschikbaar(pdfUrl);
+---
+
+<BaseLayout
+  title={`${editie.data.titel} | WAAIERS®`}
+  description={`Découvrez ${editie.data.titel}, année ${editie.data.jaargang}, numéro ${editie.data.nummer} de WAAIERS®.`}
+>
+  <article class="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
+    <a
+      href="/editions-fr/"
+      class="text-sm font-semibold text-brand-blue hover:underline"
+    >
+      ← Toutes les éditions françaises
+    </a>
+
+    <div class="mt-8 grid items-start gap-8 md:grid-cols-2 md:gap-12 lg:gap-16">
+      <div>
+        <div class="bg-stone-100 p-5 sm:p-8">
+          <img
+            src={editie.data.cover}
+            alt={`Couverture de ${editie.data.titel}`}
+            class="mx-auto max-h-[650px] w-auto max-w-full object-contain shadow-xl"
+            fetchpriority="high"
+          />
+        </div>
+
+        <nav
+          aria-label="Navigation entre les éditions françaises"
+          class="mt-5 grid grid-cols-2 gap-3"
+        >
+          {vorigeEditie ? (
+            <a
+              href={`/editions-fr/${vorigeEditie.id}/`}
+              class="border border-slate-200 p-4 transition-colors hover:border-brand-blue hover:bg-white"
+            >
+              <span class="block text-sm text-slate-500">
+                ← Édition précédente
+              </span>
+              <span class="mt-2 block font-bold text-brand-blue">
+                {vorigeEditie.data.titel}
+              </span>
+            </a>
+          ) : (
+            <div></div>
+          )}
+
+          {volgendeEditie && (
+            <a
+              href={`/editions-fr/${volgendeEditie.id}/`}
+              class="border border-slate-200 p-4 text-right transition-colors hover:border-brand-blue hover:bg-white"
+            >
+              <span class="block text-sm text-slate-500">
+                Édition suivante →
+              </span>
+              <span class="mt-2 block font-bold text-brand-blue">
+                {volgendeEditie.data.titel}
+              </span>
+            </a>
+          )}
+        </nav>
+      </div>
+
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.16em] text-brand-blue">
+          Année {editie.data.jaargang}
+          <span aria-hidden="true"> · </span>
+          Numéro {editie.data.nummer}
+        </p>
+
+        <h1 class="mt-4 font-serif text-3xl font-bold leading-tight text-brand-blue sm:text-4xl lg:text-5xl">
+          {editie.data.titel}
+        </h1>
+
+        <p class="mt-5 text-slate-600">
+          Publié le {datumFormatter.format(editie.data.verschijningsdatum)}
+        </p>
+
+        <dl class="mt-8 grid grid-cols-2 gap-5 border-y border-slate-200 py-6">
+          <div>
+            <dt class="text-sm text-slate-500">Pages</dt>
+            <dd class="mt-1 text-xl font-bold text-slate-900">
+              {editie.data.paginas}
+            </dd>
+          </div>
+
+          <div>
+            <dt class="text-sm text-slate-500">Taille du fichier</dt>
+            <dd class="mt-1 text-xl font-bold text-slate-900">
+              {editie.data.bestandsgrootte}
+            </dd>
+          </div>
+        </dl>
+
+        {pdfBeschikbaar && (
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a
+              href={pdfUrl}
+              class="inline-flex items-center bg-brand-yellow px-5 py-3 font-bold text-brand-blue transition-colors hover:bg-yellow-300"
+            >
+              <span class="mr-2" aria-hidden="true">↓</span>
+              Télécharger le PDF
+            </a>
+          </div>
+        )}
+
+        <section class="mt-10 border-t border-slate-200 pt-7">
+          <p class="text-sm font-bold uppercase tracking-[0.16em] text-brand-blue">
+            Sommaire
+          </p>
+
+          <h2 class="mt-2 font-serif text-2xl font-bold text-slate-900">
+            Dans cette édition
+          </h2>
+
+          {editie.data.artikels.length > 0 ? (
+            <ol class="mt-5 divide-y divide-slate-200 border-t border-slate-200">
+              {editie.data.artikels.map((artikel, index) => (
+                <li class="flex gap-4 py-3">
+                  <span class="w-7 shrink-0 font-serif text-sm text-slate-400">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <h3 class="font-serif font-semibold text-slate-900">
+                    {artikel.titel}
+                  </h3>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p class="mt-4 text-sm text-slate-600">
+              Le sommaire n’est pas encore disponible.
+            </p>
+          )}
+        </section>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,184 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { pdfIsBeschikbaar } from "../../../lib/pdfAvailability";
+
+type Props = {
+  edities: CollectionEntry<"edities">[];
+  huidigePagina: number;
+  totaalPaginas: number;
+};
+
+export async function getStaticPaths() {
+  const paginaGrootte = 16;
+
+  const alleEdities = (await getCollection("edities")).sort(
+    (a, b) =>
+      b.data.verschijningsdatum.getTime() -
+      a.data.verschijningsdatum.getTime()
+  );
+
+  const totaalPaginas = Math.ceil(alleEdities.length / paginaGrootte);
+
+  const paden: {
+    params: { page: string };
+    props: Props;
+  }[] = [];
+
+  for (
+    let huidigePagina = 2;
+    huidigePagina <= totaalPaginas;
+    huidigePagina++
+  ) {
+    const begin = (huidigePagina - 1) * paginaGrootte;
+    const einde = begin + paginaGrootte;
+
+    paden.push({
+      params: { page: String(huidigePagina) },
+      props: {
+        edities: alleEdities.slice(begin, einde),
+        huidigePagina,
+        totaalPaginas,
+      },
+    });
+  }
+
+  return paden;
+}
+
+const {
+  edities: zichtbareEdities,
+  huidigePagina,
+  totaalPaginas,
+} = Astro.props as Props;
+
+const workerBaseUrl =
+  "https://waaiers-download-worker.redactie-503.workers.dev";
+
+const editiesMetBeschikbaarheid = await Promise.all(
+  zichtbareEdities.map(async (editie) => {
+    const pdfUrl =
+      `${workerBaseUrl}/download/edities/nl/${encodeURIComponent(editie.id)}`;
+
+    const pdfBeschikbaar = await pdfIsBeschikbaar(pdfUrl);
+
+    return {
+      ...editie,
+      pdfUrl,
+      pdfBeschikbaar,
+    };
+  })
+);
+
+const vorigePaginaUrl =
+  huidigePagina === 2
+    ? "/edities/"
+    : `/edities/page/${huidigePagina - 1}/`;
+
+const volgendePaginaUrl =
+  `/edities/page/${huidigePagina + 1}/`;
+
+const datumFormatter = new Intl.DateTimeFormat("nl-BE", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<BaseLayout
+  title={`Edities — pagina ${huidigePagina} | WAAIERS®`}
+  description="Ontdek oudere edities van WAAIERS®, het digitale wielertijdschrift."
+>
+  <main class="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+    <p class="eyebrow mb-4">Het WAAIERS-archief</p>
+
+    <h1 class="section-heading">Oudere edities</h1>
+
+    <p class="mt-4 max-w-2xl leading-7 text-ink/75">
+      Blader verder door het archief van WAAIERS®.
+    </p>
+
+    <p class="mt-3 text-sm text-muted">
+      Pagina {huidigePagina} van {totaalPaginas}
+    </p>
+
+    <div class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {editiesMetBeschikbaarheid.map((editie) => (
+        <article class="group min-w-0 overflow-hidden border border-brand-blue/15 bg-white">
+          <a
+            href={`/edities/${editie.id}/`}
+            class="block"
+            aria-label={`Bekijk informatie over ${editie.data.titel}`}
+          >
+            <div class="overflow-hidden bg-paper p-3 sm:p-4">
+              <img
+                src={editie.data.cover}
+                alt={`Cover: ${editie.data.titel}`}
+                class="mx-auto aspect-[3/4] w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                loading="lazy"
+              />
+            </div>
+          </a>
+
+          <div class="p-5">
+            <p class="text-xs font-bold uppercase tracking-wider text-brand-blue">
+              Jaargang {editie.data.jaargang} · Nummer {editie.data.nummer}
+            </p>
+
+            <h2 class="mt-2 font-display text-2xl font-bold uppercase leading-tight text-brand-blue">
+              {editie.data.titel}
+            </h2>
+
+            <p class="mt-2 text-sm text-muted">
+              {datumFormatter.format(editie.data.verschijningsdatum)}
+            </p>
+
+            <p class="mt-2 text-sm text-muted">
+              {editie.data.paginas} pagina's · {editie.data.bestandsgrootte}
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-2">
+              <a
+                href={`/edities/${editie.id}/`}
+                class="button-secondary"
+              >
+                Info
+              </a>
+
+              {editie.pdfBeschikbaar && (
+                <a
+                  href={editie.pdfUrl}
+                  class="button-primary"
+                >
+                  <span class="mr-2" aria-hidden="true">↓</span>
+                  Download PDF
+                </a>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <nav
+      aria-label="Paginanavigatie"
+      class="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-brand-blue/20 pt-6"
+    >
+      <a href={vorigePaginaUrl} class="button-secondary">
+        ← Vorige pagina
+      </a>
+
+      <p class="text-sm text-muted">
+        Pagina {huidigePagina} van {totaalPaginas}
+      </p>
+
+      {huidigePagina < totaalPaginas ? (
+        <a href={volgendePaginaUrl} class="button-primary">
+          Volgende pagina →
+        </a>
+      ) : (
+        <span></span>
+      )}
+    </nav>
+  </main>
+</BaseLayout>

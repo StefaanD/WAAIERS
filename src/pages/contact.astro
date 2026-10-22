@@ -1,0 +1,303 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Contact | WAAIERS®"
+  description="Neem contact op met de redactie van WAAIERS®."
+>
+  <main class="bg-brand-paper text-brand-ink">
+    <div class="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
+
+      <header class="border-b-4 border-brand-yellow pb-8 sm:pb-10">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue">
+          De redactie
+        </p>
+
+        <h1 class="mt-3 font-display text-5xl font-extrabold leading-none tracking-tight text-brand-blue sm:text-6xl md:text-7xl">
+          Contact
+        </h1>
+
+        <div class="mt-5 flex items-center gap-3">
+          <span class="h-1 w-10 bg-brand-yellow"></span>
+          <p class="text-sm text-brand-muted">
+            We horen graag van je.
+          </p>
+        </div>
+
+        <p class="mt-6 max-w-2xl text-base leading-7 text-brand-blue sm:text-lg sm:leading-8 text-justify">
+          Natuurlijk horen we graag wat er op je lever ligt. Dus aarzel niet om ons te contacteren met je vragen, opmerkingen, suggesties of zelfs om je aan te bieden een artikel te schrijven.
+        </p>
+        <p class="mt-6 max-w-2xl text-base leading-7 text-brand-blue sm:text-lg sm:leading-8 text-justify">
+          Bien sûr, nous aimerions savoir ce qui vous préoccupe. N’hésitez donc pas à nous contacter pour vos questions, commentaires, suggestions ou même pour vous proposer d’écrire un article.
+        </p>
+      </header>
+
+      <div class="grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-16">
+
+        <section class="max-w-3xl">
+          <div class="border border-brand-blue/10 bg-white/50 p-5 sm:p-8">
+
+            <h2 class="font-display text-3xl font-bold text-brand-blue">
+              Stuur ons een bericht
+            </h2>
+
+            <p class="mt-2 text-sm leading-6 text-brand-muted">
+              Velden met een * zijn verplicht.
+            </p>
+
+            <div
+              id="contact-succes"
+              class="mt-6 hidden border-l-4 border-brand-yellow bg-white p-5"
+              role="status"
+              tabindex="-1"
+            >
+              <h3 class="font-display text-xl font-bold text-brand-blue">
+                Bedankt voor je bericht!
+              </h3>
+              <p class="mt-2 text-sm leading-6">
+                Je bericht is goed verstuurd. De redactie neemt indien nodig
+                contact met je op.
+              </p>
+            </div>
+
+            <div
+              id="contact-fout"
+              class="mt-6 hidden border-l-4 border-red-700 bg-white p-5"
+              role="alert"
+              tabindex="-1"
+            >
+              <p class="font-semibold text-red-800">
+                Je bericht kon niet worden verstuurd.
+              </p>
+              <p class="mt-1 text-sm leading-6">
+                Probeer het opnieuw. Lukt het nog steeds niet, probeer het
+                dan later nog eens.
+              </p>
+            </div>
+
+            <form
+              id="contact-formulier"
+              name="contact"
+              method="POST"
+              action="/"
+              data-netlify="true"
+              netlify-honeypot="bot-field"
+              class="mt-6 space-y-5"
+            >
+              <input type="hidden" name="form-name" value="contact" />
+
+              <!-- Honeypot: verborgen voor bezoekers, bedoeld om bots te vangen -->
+              <div class="absolute left-[-10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                <label for="bot-field">
+                  Laat dit veld leeg
+                  <input
+                    id="bot-field"
+                    type="text"
+                    name="bot-field"
+                    tabindex="-1"
+                    autocomplete="off"
+                  />
+                </label>
+              </div>
+
+              <div class="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label
+                    for="voornaam"
+                    class="mb-2 block text-sm font-semibold text-brand-blue"
+                  >
+                    Voornaam/Prénom *
+                  </label>
+                  <input
+                    id="voornaam"
+                    name="voornaam"
+                    type="text"
+                    autocomplete="given-name"
+                    required
+                    maxlength="100"
+                    class="w-full rounded-none border border-brand-blue/25 bg-white px-4 py-3 text-base text-brand-ink outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-yellow/70"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="familienaam"
+                    class="mb-2 block text-sm font-semibold text-brand-blue"
+                  >
+                    Familienaam/Nom de famille *
+                  </label>
+                  <input
+                    id="familienaam"
+                    name="familienaam"
+                    type="text"
+                    autocomplete="family-name"
+                    required
+                    maxlength="100"
+                    class="w-full rounded-none border border-brand-blue/25 bg-white px-4 py-3 text-base text-brand-ink outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-yellow/70"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  for="email"
+                  class="mb-2 block text-sm font-semibold text-brand-blue"
+                >
+                  E-mailadres/Adresse e-mail *
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  maxlength="254"
+                  class="w-full rounded-none border border-brand-blue/25 bg-white px-4 py-3 text-base text-brand-ink outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-yellow/70"
+                />
+              </div>
+
+              <div>
+                <label
+                  for="bericht"
+                  class="mb-2 block text-sm font-semibold text-brand-blue"
+                >
+                  Bericht/Message *
+                </label>
+                <textarea
+                  id="bericht"
+                  name="bericht"
+                  rows="7"
+                  required
+                  maxlength="10000"
+                  class="w-full resize-y rounded-none border border-brand-blue/25 bg-white px-4 py-3 text-base leading-7 text-brand-ink outline-none transition focus:border-brand-blue focus:ring-2 focus:ring-brand-yellow/70"
+                ></textarea>
+              </div>
+
+              <p class="text-sm leading-6 text-brand-muted">
+                Door je bericht te versturen, bevestig je dat je onze{" "}
+                <a
+                  href="/privacybeleid/"
+                  class="font-semibold text-brand-blue underline decoration-brand-yellow underline-offset-4 hover:text-brand-ink"
+                >
+                  privacyverklaring{" "}
+                </a>
+                hebt gelezen. We gebruiken je gegevens om je bericht te
+                behandelen en te beantwoorden.
+              </p>
+
+              <p class="text-sm leading-6 text-brand-muted">
+                En envoyant votre message, vous confirmez avoir lu notre{" "}
+                <a
+                  href="/privacybeleid/"
+                  class="font-semibold text-brand-blue underline decoration-brand-yellow underline-offset-4 hover:text-brand-ink"
+                >
+                  privacyverklaring{" "}
+                </a>
+                Nous utilisons vos données pour traiter votre message et y répondre.
+              </p>
+
+              <button
+                id="contact-versturen"
+                type="submit"
+                class="inline-flex items-center justify-center gap-3 bg-brand-blue px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-ink focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:ring-offset-2 disabled:cursor-wait disabled:opacity-60"
+              >
+                <span id="contact-knoptekst">Bericht versturen</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <aside class="space-y-5 lg:pt-2">
+          <div class="border-l-4 border-brand-yellow bg-white/50 p-5 sm:p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.15em] text-brand-muted">
+              WAAIERS®
+            </p>
+            <h2 class="mt-2 font-display text-2xl font-bold text-brand-blue">
+              Een passie voor wielererfgoed
+            </h2>
+            <p class="mt-3 text-sm leading-6 text-brand-muted text-justify">
+              WAAIERS® brengt herinneringen, verhalen en geschiedenis uit
+              de wielersport samen.
+            </p>
+          </div>
+
+          <div class="border border-brand-blue/10 p-5 sm:p-6">
+            <h2 class="font-display text-xl font-bold text-brand-blue">
+              Je privacy
+            </h2>
+            <p class="mt-2 text-sm leading-6 text-brand-muted text-justify">
+              Je gegevens worden gebruikt om je bericht te behandelen.
+              Lees in onze privacyverklaring hoe we met persoonsgegevens
+              omgaan.
+            </p>
+            <a
+              href="/privacybeleid/"
+              class="mt-4 inline-block text-sm font-semibold text-brand-blue underline decoration-brand-yellow underline-offset-4 hover:text-brand-ink"
+            >
+              Lees de privacyverklaring →
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#contact-formulier");
+  const successMessage = document.querySelector<HTMLElement>("#contact-succes");
+  const errorMessage = document.querySelector<HTMLElement>("#contact-fout");
+  const submitButton = document.querySelector<HTMLButtonElement>("#contact-versturen");
+  const buttonText = document.querySelector<HTMLElement>("#contact-knoptekst");
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!form.reportValidity()) return;
+
+    if (form.querySelector<HTMLInputElement>('[name="bot-field"]')?.value) {
+      return;
+    }
+
+    if (!submitButton || !buttonText || !successMessage || !errorMessage) return;
+
+    successMessage.classList.add("hidden");
+    errorMessage.classList.add("hidden");
+    submitButton.disabled = true;
+    buttonText.textContent = "Bezig met versturen…";
+
+    try {
+      const formData = new FormData(form);
+      const body = new URLSearchParams();
+
+      formData.forEach((value, key) => {
+        body.append(key, String(value));
+      });
+
+      const response = await fetch("/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: body.toString(),
+      });
+
+      if (!response.ok) {
+        throw new Error("Het formulier kon niet worden verstuurd.");
+      }
+
+      form.reset();
+      form.classList.add("hidden");
+      successMessage.classList.remove("hidden");
+      successMessage.focus();
+    } catch {
+      errorMessage.classList.remove("hidden");
+      errorMessage.focus();
+    } finally {
+      submitButton.disabled = false;
+      buttonText.textContent = "Bericht versturen";
+    }
+  });
+</script>

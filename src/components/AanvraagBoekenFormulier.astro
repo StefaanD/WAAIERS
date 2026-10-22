@@ -1,0 +1,205 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  publicaties: CollectionEntry<"andere-publicaties">[];
+}
+
+const { publicaties } = Astro.props;
+---
+
+<section id="informatie-aanvragen" class="mb-14 scroll-mt-8">
+  <div class="mb-6 max-w-2xl">
+    <p class="eyebrow mb-3">Vragen over onze boeken?</p>
+    <h2 class="section-heading mb-4">Vraag meer informatie aan</h2>
+    <p class="leading-7 text-muted">
+      Wil je meer weten over een van onze publicaties? Vul het formulier in.
+      We nemen binnenkort contact met je op.
+    </p>
+  </div>
+
+  <form
+    id="boekenformulier"
+    name="aanvraag-andere-publicaties"
+    method="POST"
+    action="/andere-publicaties/"
+    data-netlify="true"
+    netlify-honeypot="bot-field"
+    class="max-w-3xl space-y-5"
+  >
+    <input
+      type="hidden"
+      name="form-name"
+      value="aanvraag-andere-publicaties"
+    />
+
+    <p class="hidden">
+      <label>
+        Niet invullen:
+        <input name="bot-field" tabindex="-1" autocomplete="off" />
+      </label>
+    </p>
+
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <label class="block text-sm font-semibold">
+        Voornaam *
+        <input
+          type="text"
+          name="voornaam"
+          autocomplete="given-name"
+          required
+          class="mt-2 w-full border border-brand-blue/30 bg-white px-3 py-3 font-normal"
+        />
+      </label>
+
+      <label class="block text-sm font-semibold">
+        Familienaam *
+        <input
+          type="text"
+          name="familienaam"
+          autocomplete="family-name"
+          required
+          class="mt-2 w-full border border-brand-blue/30 bg-white px-3 py-3 font-normal"
+        />
+      </label>
+    </div>
+
+    <label class="block text-sm font-semibold">
+      E-mailadres *
+      <input
+        type="email"
+        name="email"
+        autocomplete="email"
+        required
+        class="mt-2 w-full border border-brand-blue/30 bg-white px-3 py-3 font-normal"
+      />
+    </label>
+
+    <label class="block text-sm font-semibold">
+      Over welke publicatie(s) heb je een vraag?
+      <span class="mt-1 block font-normal text-muted">
+        Je kunt meerdere boeken selecteren door Ctrl (Windows) of Cmd (Mac)
+        ingedrukt te houden.
+      </span>
+      <select
+        name="publicaties"
+        id="gekozen-publicaties"
+        multiple
+        size="5"
+        class="mt-2 w-full border border-brand-blue/30 bg-white px-3 py-3 font-normal"
+      >
+        {publicaties.map((publicatie) => (
+          <option value={publicatie.data.titel}>
+            {publicatie.data.titel}
+          </option>
+        ))}
+      </select>
+    </label>
+
+    <label class="block text-sm font-semibold">
+      Bericht *
+      <textarea
+        name="bericht"
+        rows="5"
+        required
+        class="mt-2 w-full border border-brand-blue/30 bg-white px-3 py-3 font-normal"
+      ></textarea>
+    </label>
+
+    <label class="flex items-start gap-3 text-sm leading-6">
+      <input
+        type="checkbox"
+        name="privacytoestemming"
+        value="akkoord"
+        required
+        class="mt-1 size-4 shrink-0 accent-brand-blue"
+      />
+      <span>
+        Ik stem ermee in dat deze site mijn ingediende informatie opslaat
+        zodat zij op mijn vraag kunnen reageren.
+      </span>
+    </label>
+
+    <button type="submit" class="button-primary">
+      Versturen <span aria-hidden="true">→</span>
+    </button>
+
+    <p
+      id="boekenformulier-status"
+      class="text-sm"
+      role="status"
+      aria-live="polite"
+    ></p>
+  </form>
+
+  <div id="boekenformulier-bedankt" class="hidden max-w-2xl">
+    <h2 class="section-heading mb-4">Bedankt!</h2>
+    <p class="leading-7">
+      Bedankt om ons te contacteren. We nemen binnenkort contact met je op
+      over je vraag over boeken.
+    </p>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#boekenformulier");
+  const select = document.querySelector<HTMLSelectElement>("#gekozen-publicaties");
+  const status = document.querySelector<HTMLElement>("#boekenformulier-status");
+  const bedankt = document.querySelector<HTMLElement>("#boekenformulier-bedankt");
+
+  document.querySelectorAll<HTMLAnchorElement>("[data-publicatie]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const titel = link.dataset.publicatie;
+      if (!titel || !select) return;
+
+      Array.from(select.options).forEach((option) => {
+        option.selected = option.value === titel;
+      });
+    });
+  });
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!form.reportValidity()) return;
+
+    const submitButton = form.querySelector<HTMLButtonElement>(
+      'button[type="submit"]'
+    );
+
+    if (submitButton) submitButton.disabled = true;
+    if (status) status.textContent = "Je bericht wordt verstuurd…";
+
+    try {
+      const formData = new FormData(form);
+      const body = new URLSearchParams();
+
+      formData.forEach((value, key) => {
+        body.append(key, String(value));
+      });
+
+      const response = await fetch("/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: body.toString(),
+      });
+
+      if (!response.ok) {
+        throw new Error("Verzenden mislukt.");
+      }
+
+      form.classList.add("hidden");
+      bedankt?.classList.remove("hidden");
+      bedankt?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch {
+      if (status) {
+        status.textContent =
+          "Verzenden is niet gelukt. Probeer het opnieuw.";
+      }
+
+      if (submitButton) submitButton.disabled = false;
+    }
+  });
+</script>

@@ -1,0 +1,231 @@
+---
+import { getCollection } from "astro:content";
+import { existsSync } from "node:fs";
+import path from "node:path";
+
+type MediaReferentie = {
+  collectie: string;
+  item: string;
+  veld: string;
+  bestand: string;
+};
+
+const referenties: MediaReferentie[] = [];
+const ontbrekend: MediaReferentie[] = [];
+const overgeslagen: MediaReferentie[] = [];
+
+function voegToe(
+  collectie: string,
+  item: string,
+  veld: string,
+  waarde: string | null | undefined,
+  verplicht = true
+) {
+  if (!waarde) {
+    if (verplicht) {
+      ontbrekend.push({
+        collectie,
+        item,
+        veld,
+        bestand: "(geen bestandspad ingevuld)",
+      });
+    }
+    return;
+  }
+
+  // Externe URL's worden niet op de lokale schijf gecontroleerd.
+  if (/^https?:\/\//i.test(waarde)) {
+    overgeslagen.push({
+      collectie,
+      item,
+      veld,
+      bestand: waarde,
+    });
+    return;
+  }
+
+  let relatiefPad: string;
+
+  try {
+    relatiefPad = decodeURIComponent(waarde).replace(/^\/+/, "");
+  } catch {
+    ontbrekend.push({
+      collectie,
+      item,
+      veld,
+      bestand: waarde,
+    });
+    return;
+  }
+
+  const publicMap = path.resolve(process.cwd(), "public");
+  const volledigPad = path.resolve(publicMap, relatiefPad);
+
+  // Voorkom dat een pad buiten public/ wordt gecontroleerd.
+  if (
+    volledigPad !== publicMap &&
+    !volledigPad.startsWith(publicMap + path.sep)
+  ) {
+    ontbrekend.push({
+      collectie,
+      item,
+      veld,
+      bestand: waarde,
+    });
+    return;
+  }
+
+  referenties.push({
+    collectie,
+    item,
+    veld,
+    bestand: waarde,
+  });
+
+  if (!existsSync(volledigPad)) {
+    ontbrekend.push({
+      collectie,
+      item,
+      veld,
+      bestand: waarde,
+    });
+  }
+}
+
+// Edities en eventuele Franse versies
+const edities = await getCollection("edities");
+
+for (const editie of edities) {
+  const d = editie.data;
+
+  voegToe("Edities", d.titel, "cover", d.cover);
+  voegToe("Edities", d.titel, "pdf", d.pdf);
+
+  if (d.franse_editie?.beschikbaar) {
+    voegToe(
+      "Franse edities",
+      d.titel,
+      "cover",
+      d.franse_editie.cover
+    );
+    voegToe(
+      "Franse edities",
+      d.titel,
+      "pdf",
+      d.franse_editie.pdf
+    );
+  } else {
+    // Een Franse cover of PDF mag ontbreken als er geen Franse editie is.
+    if (d.franse_editie?.cover) {
+      voegToe("Franse edities", d.titel, "cover", d.franse_editie.cover, false);
+    }
+    if (d.franse_editie?.pdf) {
+      voegToe("Franse edities", d.titel, "pdf", d.franse_editie.pdf, false);
+    }
+  }
+}
+
+// Berichten
+const berichten = await getCollection("berichten");
+
+for (const bericht of berichten) {
+  voegToe(
+    "Berichten",
+    bericht.data.titel,
+    "afbeelding",
+    bericht.data.afbeelding,
+    false
+  );
+}
+
+// Geactualiseerde artikels
+const geactualiseerdeArtikels = await getCollection(
+  "geactualiseerde-artikels"
+);
+
+for (const artikel of geactualiseerdeArtikels) {
+  voegToe("Geactualiseerde artikels", artikel.data.titel, "cover", artikel.data.cover);
+  voegToe("Geactualiseerde artikels", artikel.data.titel, "pdf", artikel.data.pdf);
+}
+
+// Andere publicaties
+const anderePublicaties = await getCollection("andere-publicaties");
+
+for (const publicatie of anderePublicaties) {
+  voegToe("Andere publicaties", publicatie.data.titel, "cover", publicatie.data.cover);
+}
+
+// Redactie
+const redactie = await getCollection("redactie");
+
+for (const persoon of redactie) {
+  voegToe("Redactie", persoon.data.naam, "afbeelding", persoon.data.afbeelding);
+}
+
+const geldig = referenties.length - ontbrekend.filter(
+  (m) => m.bestand !== "(geen bestandspad ingevuld)"
+).length;
+
+const aantalCollecties = [
+  ["Edities", edities.length],
+  ["Berichten", berichten.length],
+  ["Geactualiseerde artikels", geactualiseerdeArtikels.length],
+  ["Andere publicaties", anderePublicaties.length],
+  ["Redactie", redactie.length],
+] as const;
+---
+
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Media controleren — WAAIERS</title>
+  </head>
+  <body>
+    <main>
+      <h1>Media controleren</h1>
+
+      <h2>Gecontroleerde content</h2>
+      <ul>
+        {aantalCollecties.map(([naam, aantal]) => (
+          <li>{naam}: {aantal} items</li>
+        ))}
+      </ul>
+
+      <h2>Resultaat</h2>
+      <p>Lokale bestandspaden gecontroleerd: {referenties.length}</p>
+      <p>Ontbrekende bestanden of verwijzingen: {ontbrekend.length}</p>
+      <p>Externe URL's overgeslagen: {overgeslagen.length}</p>
+
+      {ontbrekend.length === 0 ? (
+        <p>Alle gecontroleerde mediaverwijzingen zijn in orde.</p>
+      ) : (
+        <>
+          <h2>Ontbrekende bestanden of verwijzingen</h2>
+          <ul>
+            {ontbrekend.map((m) => (
+              <li>
+                <strong>{m.collectie}</strong> — {m.item} ({m.veld}):{" "}
+                <code>{m.bestand}</code>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {overgeslagen.length > 0 && (
+        <>
+          <h2>Externe URL's</h2>
+          <p>Deze URL's zijn niet op de lokale schijf gecontroleerd.</p>
+          <ul>
+            {overgeslagen.map((m) => (
+              <li>
+                {m.collectie} — {m.item}: <code>{m.bestand}</code>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </main>
+  </body>
+</html>

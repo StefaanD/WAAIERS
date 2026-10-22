@@ -1,0 +1,57 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+
+const redactie = await getCollection("redactie");
+---
+
+<BaseLayout title="Redactie | WAAIERS®">
+  <main class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <header class="mb-10 max-w-3xl">
+      <p class="eyebrow mb-3">Wie maakt WAAIERS®?</p>
+
+      <h1 class="section-heading mb-5">Redactie</h1>
+
+      <p class="text-base leading-7 text-muted md:text-lg text-justify">
+        Een tijdschrift, zelfs een digitaal tijdschrift, kan niet gemaakt
+        worden zonder de hulp van meerdere personen. Dus even de
+        redactiekern van WAAIERS® voorstellen hieronder.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {await Promise.all(
+        redactie.map(async (lid) => {
+            const { Content } = await render(lid);
+
+            return (
+            <article class="flex h-full min-h-52 gap-4 border border-brand-blue/15 bg-white/60 p-4 md:p-5">
+                <div class="w-24 shrink-0 sm:w-28">
+                <img
+                    src={lid.data.afbeelding}
+                    alt={`Portret van ${lid.data.naam}`}
+                    class="aspect-[3/4] w-full object-cover"
+                    loading="lazy"
+                />
+                </div>
+
+                <div class="min-w-0 flex-1">
+                <h2 class="mb-1 text-2xl uppercase leading-tight">
+                    {lid.data.naam}
+                </h2>
+
+                <p class="mb-3 text-xs font-bold uppercase tracking-wider text-muted">
+                    {lid.data.functie}
+                </p>
+
+                <div class="text-sm leading-6 text-ink text-justify">
+                    <Content />
+                </div>
+                </div>
+            </article>
+            );
+        })
+        )}
+    </div>
+  </main>
+</BaseLayout>
